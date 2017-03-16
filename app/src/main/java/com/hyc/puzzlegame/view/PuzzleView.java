@@ -178,17 +178,23 @@ public class PuzzleView extends View {
                 x=event.getX();
                 y=event.getY();
                 if (y>imageHeight*4){
+                    currentDownPosition=-1;
                     return false;
                 }
                 currentDownPosition=(int)(x/imageWidth)*4+(int)(y/imageHeight);
                 break;
             case MotionEvent.ACTION_MOVE:
+                if (currentDownPosition==-1){
+                    break;
+                }
                 float moveX=event.getX();
                 float moveY=event.getY();
                 moveCurrentImage(x,y,moveX,moveY);
-
                 break;
             case MotionEvent.ACTION_UP:
+                if (currentDownPosition==-1){
+                    break;
+                }
                 judgeIsChange();
                 moveDistance=0;
                 fingerIsUp=true;
