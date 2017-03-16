@@ -3,7 +3,6 @@ package com.hyc.puzzlegame.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.util.Log;
 import com.hyc.puzzlegame.bean.ImagePiece;
 import java.util.ArrayList;
 import java.util.List;

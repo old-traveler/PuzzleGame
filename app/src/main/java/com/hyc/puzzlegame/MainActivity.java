@@ -29,8 +29,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         onClick();
-
-
     }
 
     public void onClick() {
@@ -43,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //获取图片路径
+        //获取被选择的图片路径
         if (requestCode == IMAGE && resultCode == Activity.RESULT_OK && data != null) {
             Uri selectedImage = data.getData();
             String[] filePathColumns = {MediaStore.Images.Media.DATA};
@@ -54,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
             showImage(imagePath);
             c.close();
         }
+        //获取拍照后的bitmap
         if(resultCode!=RESULT_OK)
             return;
         switch(requestCode) {

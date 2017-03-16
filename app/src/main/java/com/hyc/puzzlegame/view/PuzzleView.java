@@ -19,16 +19,29 @@ import java.util.List;
 
 public class PuzzleView extends View {
 
+    /**
+     * 每个被切割后小图片的宽度
+     */
     private float imageWidth;
-
+    /**
+     * 每个被切割后小图片的高度
+     */
     private float imageHeight;
-
+    /**
+     * 当前手指落下的图片位置
+     */
     private int currentDownPosition;
-
+    /**
+     * 滑动图片时相对需要移动的图片位置
+     */
     private int relativePosition=-1;
-
-    private boolean isUp=false;
-
+    /**
+     * 判断手指是否松开
+     */
+    private boolean fingerIsUp=false;
+    /**
+     * 被切割后的小图片
+     */
     private List<ImagePiece> list;
 
     private Paint paint;
@@ -67,24 +80,22 @@ public class PuzzleView extends View {
 
     private void drawPuzzle(Canvas canvas) {
 
-
         for (int i=0;i<3;i++){
             for (int j=0;j<4;j++){
-                if (i*4+j==relativePosition&&!isUp){
+                if (i*4+j==relativePosition&&!fingerIsUp){
                     canvas.drawLine(i*imageWidth,(j+1)*imageHeight,(i+1)*imageWidth,(j+1)*imageHeight,paint);
                     if(i!=2){
                         canvas.drawLine((i+1)*imageWidth,j*imageHeight,(i+1)*imageWidth,(j+1)*imageHeight,paint);
                     }
                     continue;
                 }
-                if (i*4+j==currentDownPosition&&!isUp){
+                if (i*4+j==currentDownPosition&&!fingerIsUp){
                     if (isVertical){
                         canvas.drawBitmap(list.get(i*4+j).getBitmap(),i*imageWidth,j*imageHeight+moveDistance,paint);
                     }else {
                         canvas.drawBitmap(list.get(i*4+j).getBitmap(),i*imageWidth+moveDistance,j*imageHeight,paint);
                     }
                     drawMoveRelative(canvas,i,j);
-
                 }else{
                     canvas.drawBitmap(list.get(i*4+j).getBitmap(),i*imageWidth,j*imageHeight,paint);
                 }
@@ -97,6 +108,12 @@ public class PuzzleView extends View {
         }
     }
 
+    /**
+     * 当手指滑动图片移动时，绘制移动方向想对的图片位置
+     * @param canvas
+     * @param i
+     * @param j
+     */
     private void drawMoveRelative(Canvas canvas,int i,int j) {
         switch (moveDirection){
             case LEFT:
@@ -157,7 +174,7 @@ public class PuzzleView extends View {
 
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                isUp=false;
+                fingerIsUp=false;
                 x=event.getX();
                 y=event.getY();
                 currentDownPosition=(int)(x/imageWidth)*4+(int)(y/imageHeight);
@@ -171,7 +188,7 @@ public class PuzzleView extends View {
             case MotionEvent.ACTION_UP:
                 judgeIsChange();
                 moveDistance=0;
-                isUp=true;
+                fingerIsUp=true;
                 relativePosition=-1;
                 currentDownPosition=-1;
                 invalidate();
@@ -181,6 +198,9 @@ public class PuzzleView extends View {
         return true;
     }
 
+    /**
+     * 判断是否拼图成功
+     */
     private void checkIsWin() {
         if (isWin){
             return;
@@ -196,6 +216,9 @@ public class PuzzleView extends View {
         Toast.makeText(getContext(), "拼图完成！", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * 判断手指松开是是否需要改变位置
+     */
     private void judgeIsChange() {
         if ((isVertical&&Math.abs(moveDistance)>imageHeight/2)|(!isVertical&&Math.abs(moveDistance)>imageWidth/2)){
             if (relativePosition==-1){
@@ -224,7 +247,13 @@ public class PuzzleView extends View {
     public final int BOTTOM=63042;
 
 
-
+    /**
+     * 移动当前手指落下的图片
+     * @param x
+     * @param y
+     * @param moveX
+     * @param moveY
+     */
     private void moveCurrentImage(float x, float y, float moveX, float moveY) {
         if (Math.max(Math.abs(moveX-x),Math.abs(moveY-y))<80f||isWin)
             return;
